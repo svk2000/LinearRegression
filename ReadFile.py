@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from matplotlib import pyplot as plt
 
 
+
 # dataset URL https://archive.ics.uci.edu/ml/datasets/Real+estate+valuation+data+set
 # Read file from S3 bucket using pandas library
 def read_file():
@@ -15,7 +16,7 @@ def read_file():
     return (records.iloc[:, :7], records.iloc[:, 7:8])
 
 def split_data(inputData, outputData):
-    return train_test_split(inputData, outputData, test_size=0.2, random_state=0)
+    return train_test_split(inputData, outputData, test_size=0.1, random_state=0)
 
 def calch(xTrain,yTrain, weights):
     # initialize data calculate data
@@ -62,14 +63,14 @@ def newWeights(learning, errors , xTrain, weights) :
 def main():
     # read file 
     inputData, outputData = read_file()
-    print(type(inputData), type(outputData))
+    # print(type(inputData), type(outputData))
 
     inputData =pd.DataFrame(preprocessing.scale(inputData))
     outputData =pd.DataFrame(preprocessing.scale(outputData))
 
     # seperate traindata and  test data
     xTrain, xTest, yTrain, yTest = split_data(inputData, outputData)
-    print(type(xTrain), type(xTest),  type(yTrain), type(yTrain))
+    # print(type(xTrain), type(xTest),  type(yTrain), type(yTrain))
 
     #initialize weights --by checking first row and removing number column
     weights= [.3,.003,.098,0.4,0.99,.98] # * ( xTrain.values[0].size - 1 )
@@ -82,11 +83,11 @@ def main():
     #get Learning value
    
     # return
-    for learning in range(0, 1 ) :
+    for learning in range(0, 5 ) :
         # format of graphData (learning, mse , [weights])
-        learning = learning  *.001  + .3
+        learning =  .1 /(10 ** learning)
         graphData=[];
-        iterations = 10000
+        iterations = 500
         # use 1000 iterations
         for iter in range(iterations):
             # print("weights ", weights)
@@ -98,11 +99,11 @@ def main():
             # update weights
             weights = newWeights(learning, mseTuple[1],xTrain, weights)
             # print(mseTuple[0])
-            if iter % 100 == 0 :
-                print(iter, mseTuple[0])
+            # if iter % 100 == 0 :
+            #     print(iter, mseTuple[0])
         #update Graph data.
         graphData.append((learning,iterations, mseTuple[0]))
-    print(graphData)
+        print(graphData)
 
 main()    
 #print("xtest", type(xTest), xTest)
