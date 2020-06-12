@@ -4,7 +4,8 @@ import requests
 from sklearn import datasets, linear_model, preprocessing
 from sklearn.model_selection import train_test_split
 from matplotlib import pyplot as plt
-
+import random
+import matplotlib.pyplot as plt
 
 
 # dataset URL https://archive.ics.uci.edu/ml/datasets/Real+estate+valuation+data+set
@@ -20,15 +21,10 @@ def split_data(inputData, outputData):
 
 def calch(xTrain,yTrain, weights):
     # initialize data calculate data
-    bias = .005
     h=[0] * xTrain.size
     for ri , row in enumerate(xTrain.values) :
-        for ci, cell in enumerate(row[1:]) :
+        for ci, cell in enumerate(row) :
             h[ri] = h[ri] + (cell * weights[ci])
-        h[ri] = h[ri] + bias
-        # if ri < 3 :
-        #     print(h[ri],yTrain.values[ri])
-    # print("****************")
     return h
         
 def mse(h, yTrain) :
@@ -54,16 +50,22 @@ def newWeights(learning, errors , xTrain, weights) :
        
         diffErr =0;
         for rowNumber, row in enumerate(xTrain.values) :
-           diffErr = diffErr + (errors[rowNumber] * row[colIndex +1 ]) # adding +1 bacause of No is there in input list
+           diffErr = diffErr + (errors[rowNumber] * row[colIndex]) # adding +1 bacause of No is there in input list
         # newWeights.append( round(oldWeight - learning/n * ( mseTuple[0] ) + diffErr ,4) )
         newWeights.append( oldWeight - ((learning/n)*   diffErr)  )
     return newWeights
-    
+
+def drawIterationGraph(iter, modelMse, testMse) :
+    plt.plot(iter,modelMse,color='red')
+    plt.plot(iter,testMse,color='green')
+    plt.xlabel('ITERATIONS')
+    plt.ylabel('MSE')
+    plt.show()
 
 def main():
     # read file 
     inputData, outputData = read_file()
-    # print(type(inputData), type(outputData))
+    # print(inputData, outputData)
 
     inputData =pd.DataFrame(preprocessing.scale(inputData))
     outputData =pd.DataFrame(preprocessing.scale(outputData))
@@ -73,40 +75,41 @@ def main():
     # print(type(xTrain), type(xTest),  type(yTrain), type(yTrain))
 
     #initialize weights --by checking first row and removing number column
-    weights= [.3,.003,.098,0.4,0.99,.98] # * ( xTrain.values[0].size - 1 )
-
-    # print(type(xTrain),xTrain)
-    #preprocessing
-    # xTrain =pd.DataFrame(preprocessing.scale(xTrain))
-    # yTrain =pd.DataFrame(preprocessing.scale(yTrain))
-    # print(type(xTrain),type([]),xTrain )
-    #get Learning value
+    # weights= [.3,.003,.098,0.4,0.99,.98] # * ( xTrain.values[0].size - 1 )
+    weights= [.4,.1,.2,.125,.075,.05,.05] # * ( xTrain.values[0].size - 1 )
    
-    # return
-    for learning in range(0, 5 ) :
-        # format of graphData (learning, mse , [weights])
-        learning =  .1 /(10 ** learning)
-        graphData=[];
-        iterations = 500
-        # use 1000 iterations
-        for iter in range(iterations):
-            # print("weights ", weights)
-            h= calch(xTrain,yTrain,weights)
-            
-            # print(h)
-            mseTuple = mse(h,yTrain)
+    graphIter=[]
+    graphMse=[]
 
-            # update weights
-            weights = newWeights(learning, mseTuple[1],xTrain, weights)
-            # print(mseTuple[0])
-            # if iter % 100 == 0 :
-            #     print(iter, mseTuple[0])
-        #update Graph data.
-        graphData.append((learning,iterations, mseTuple[0]))
-        print(graphData)
+    testGraphMse=[]
+    # return
+    for learning in range(1 , 2 ) :
+        # format of graphData (learning, mse , [weights])
+        learning =  1/(10 ** learning)
+        for iter in range(1, 30) :
+            iterations = 10 * iter
+            
+            #training model
+            for iter in range(iterations):
+                # print("weights ", weights)
+                h= calch(xTrain,yTrain,weights)
+                
+                # print(h)
+                mseTuple = mse(h,yTrain)
+
+                # update weights
+                weights = newWeights(learning, mseTuple[1],xTrain, weights)
+
+            graphIter.append(iterations)
+            graphMse.append(mseTuple[0])
+
+            #testing model
+            h = calch(xTest,yTest,weights) 
+            mseTuple = mse(h , yTest)
+            testGraphMse.append(mseTuple[0])
+
+    #draw graph
+    drawIterationGraph(graphIter,graphMse,testGraphMse)
+            
 
 main()    
-#print("xtest", type(xTest), xTest)
-#print("ytrain",type(yTrain),yTrain)
-#print("yTest",type(yTest),yTest)
-# rf()
