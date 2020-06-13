@@ -3,8 +3,6 @@ import io
 import requests
 from sklearn import datasets, linear_model, preprocessing
 from sklearn.model_selection import train_test_split
-from matplotlib import pyplot as plt
-import random
 import matplotlib.pyplot as plt
 
 
@@ -55,11 +53,13 @@ def newWeights(learning, errors , xTrain, weights) :
         newWeights.append( oldWeight - ((learning/n)*   diffErr)  )
     return newWeights
 
-def drawIterationGraph(iter, modelMse, testMse) :
-    plt.plot(iter,modelMse,color='red')
-    plt.plot(iter,testMse,color='green')
+def drawIterationGraph(iter, modelMse, testMse, learning) :
+    plt.plot(iter,modelMse,color='red',label='Train-MSE')
+    plt.plot(iter,testMse,color='green',label='Test-MSE')
     plt.xlabel('ITERATIONS')
     plt.ylabel('MSE')
+    plt.title(f'Learning rate: {learning}')
+    plt.legend()
     plt.show()
 
 def main():
@@ -78,16 +78,20 @@ def main():
     # weights= [.3,.003,.098,0.4,0.99,.98] # * ( xTrain.values[0].size - 1 )
     weights= [.4,.1,.2,.125,.075,.05,.05] # * ( xTrain.values[0].size - 1 )
    
-    graphIter=[]
-    graphMse=[]
-
-    testGraphMse=[]
+    # graphIter=[]
+    # graphMse=[]
+    #
+    # testGraphMse=[]
     # return
-    for learning in range(1 , 2 ) :
+    for rate in range(1 , 3 ) :
         # format of graphData (learning, mse , [weights])
-        learning =  1/(10 ** learning)
-        for iter in range(1, 30) :
-            iterations = 10 * iter
+        graphIter=[]
+        graphMse=[]
+        testGraphMse=[]
+        weights= [.4,.1,.2,.125,.075,.05,.05]
+        learning =  1/(10 ** rate)
+        for iter in range(1, 30*rate) :
+            iterations = (10 * iter)
             
             #training model
             for iter in range(iterations):
@@ -107,9 +111,10 @@ def main():
             h = calch(xTest,yTest,weights) 
             mseTuple = mse(h , yTest)
             testGraphMse.append(mseTuple[0])
+        drawIterationGraph(graphIter,graphMse,testGraphMse, learning)
 
     #draw graph
-    drawIterationGraph(graphIter,graphMse,testGraphMse)
+    # drawIterationGraph(graphIter,graphMse,testGraphMse)
             
 
 main()    
