@@ -55,7 +55,9 @@ def main():
             testGraphMse.append(mseTuple[0])
         data = {'Learning Rate': learningRate, 'Number of Iterations': graphDataIterations, 'Train MSE': graphDataMse, 'Test MSE': testGraphMse }
         df = pd.DataFrame(data=data)
-        print(df)
+        print('----------------')
+        print(df.iloc[-1])
+        print('Creating Plot for learning Rate: %.2f'% learningRate)
         data_processor.plot_mse_iterations(graphDataIterations, graphDataMse, testGraphMse, learningRate)
 
 
