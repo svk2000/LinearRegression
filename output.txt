@@ -1,0 +1,14 @@
+----------------
+Learning Rate            0.100000
+Number of Iterations    29.000000
+Train MSE                0.216516
+Test MSE                 0.142873
+Name: 28, dtype: float64
+Created & Saved Plot for learning Rate with file Name:  MSE_Vs_Iterations_LearningRate0.1.png
+----------------
+Learning Rate            0.010000
+Number of Iterations    59.000000
+Train MSE                0.216524
+Test MSE                 0.143347
+Name: 58, dtype: float64
+Created & Saved Plot for learning Rate with file Name:  MSE_Vs_Iterations_LearningRate0.01.png

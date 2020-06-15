@@ -1,7 +1,3 @@
-import pandas as pd
-import io
-import requests
-from sklearn import datasets, linear_model, preprocessing
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
@@ -48,11 +44,15 @@ class DataProcessor:
         return newWeights
 
     def plot_mse_iterations(self, iter, modelMse, testMse, learning):
+        fileName = 'MSE_vs_Iterations_LearningRate'+str(learning)+'.png'
         plt.plot(iter,modelMse,color='red',label='Train-MSE')
         plt.plot(iter,testMse,color='green',label='Test-MSE')
         plt.xlabel('ITERATIONS')
         plt.ylabel('MSE')
         plt.title(f'Learning rate: {learning}')
         plt.legend()
+        plt.savefig(fileName)
         plt.show()
+        plt.close()
+        print('Created & Saved Plot for learning Rate with file Name: ', fileName)
 

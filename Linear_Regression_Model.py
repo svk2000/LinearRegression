@@ -21,12 +21,6 @@ def main():
     outputData =pd.DataFrame(preprocessing.scale(outputData))
     # seperate traindata and  test data
     xTrain, xTest, yTrain, yTest = data_processor.split_data(inputData, outputData)
-   
-    # graphIter=[]
-    # graphMse=[]
-    #
-    # testGraphMse=[]
-    # return
     for rateIndex, learningRate in enumerate(learningRates):
         # format of graphData (learning, mse , [weights])
         graphDataIterations=[]
@@ -57,7 +51,6 @@ def main():
         df = pd.DataFrame(data=data)
         print('----------------')
         print(df.iloc[-1])
-        print('Creating Plot for learning Rate: %.2f'% learningRate)
         data_processor.plot_mse_iterations(graphDataIterations, graphDataMse, testGraphMse, learningRate)
 
 
